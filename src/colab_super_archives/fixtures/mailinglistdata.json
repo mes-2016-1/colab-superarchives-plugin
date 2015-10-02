@@ -39,7 +39,7 @@
       "md5": "ed8f47ae6048f8d4456c0554578f53ff",
       "address": "johndoe@example.com"
     },
-    "model": "super_archives.emailaddress",
+    "model": "colab_super_archives.emailaddress",
     "pk": 1
   },
   {
@@ -51,7 +51,7 @@
       "is_private": true,
       "name": "mailman"
     },
-    "model": "super_archives.mailinglist",
+    "model": "colab_super_archives.mailinglist",
     "pk": 1
   },
   {
@@ -63,7 +63,7 @@
       "is_private": false,
       "name": "lista"
     },
-    "model": "super_archives.mailinglist",
+    "model": "colab_super_archives.mailinglist",
     "pk": 2
   },
   {
@@ -75,7 +75,7 @@
       "is_private": true,
       "name": "privatelist"
     },
-    "model": "super_archives.mailinglist",
+    "model": "colab_super_archives.mailinglist",
     "pk": 3
   },
   {
@@ -86,7 +86,7 @@
       "score": 34,
       "latest_message": 1
     },
-    "model": "super_archives.thread",
+    "model": "colab_super_archives.thread",
     "pk": 1
   },
   {
@@ -97,7 +97,7 @@
       "score": 34,
       "latest_message": 2
     },
-    "model": "super_archives.thread",
+    "model": "colab_super_archives.thread",
     "pk": 2
   },
   {
@@ -108,7 +108,7 @@
       "score": 33,
       "latest_message": 3
     },
-    "model": "super_archives.thread",
+    "model": "colab_super_archives.thread",
     "pk": 3
   },
   {
@@ -122,7 +122,7 @@
       "message_id": "<20150224142347.9ED2419A5B0@localhost.localdomain>",
       "subject": "[Mailman] (no subject)"
     },
-    "model": "super_archives.message",
+    "model": "colab_super_archives.message",
     "pk": 1
   },
   {
@@ -136,7 +136,7 @@
       "message_id": "<20150224141545.1AECA19A5A0@localhost.localdomain>",
       "subject": "[Lista] (no subject)"
     },
-    "model": "super_archives.message",
+    "model": "colab_super_archives.message",
     "pk": 2
   },
   {
@@ -150,7 +150,7 @@
       "message_id": "<20150224141545.1AECA19A5A0@localhost.localdomain>",
       "subject": "[PrivateList] (no subject)"
     },
-    "model": "super_archives.message",
+    "model": "colab_super_archives.message",
     "pk": 3
   },
   {
@@ -160,7 +160,7 @@
       "is_reply": false,
       "order": 0
     },
-    "model": "super_archives.messageblock",
+    "model": "colab_super_archives.messageblock",
     "pk": 1
   },
   {
@@ -170,7 +170,7 @@
       "is_reply": false,
       "order": 0
     },
-    "model": "super_archives.messageblock",
+    "model": "colab_super_archives.messageblock",
     "pk": 2
   },
   {
@@ -180,7 +180,7 @@
       "is_reply": false,
       "order": 0
     },
-    "model": "super_archives.messageblock",
+    "model": "colab_super_archives.messageblock",
     "pk": 3
   }
 ]

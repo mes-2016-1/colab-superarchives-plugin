@@ -1,11 +1,8 @@
 
-from django.apps import AppConfig
+from colab.plugins.utils.apps import ColabPluginAppConfig
 
 
-class SuperArchivesConfig(AppConfig):
-    name = 'colab.super_archives'
+class SuperArchivesConfig(ColabPluginAppConfig):
+    name = 'colab_super_archives'
     verbose_name = 'Super Archives'
 
-    def ready(self):
-        pass
-        # from . import signals

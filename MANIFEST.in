@@ -1,8 +1,11 @@
 include setup.cfg
 include README.md
 include MANIFEST.in
-include src/colab_gitlab/diazo.xml
-recursive-include src/colab_gitlab/locale *
-recursive-include src/colab_gitlab/templates *
+recursive-include src/colab_super_archives/locale *
+recursive-include src/colab_super_archives/templates *
+recursive-include src/colab_super_archives/templatetags *
+recursive-include src/colab_super_archives/utils *
+recursive-include src/colab_super_archives/fixtures *
+recursive-include src/colab_super_archives/management *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

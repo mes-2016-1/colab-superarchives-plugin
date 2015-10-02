@@ -1,28 +1,23 @@
 #!/usr/bin/env python
 """
-colab-gitlab plugin
+colab-super_archives plugin
 ===================
 
-A Gitlab plugin for Colab.
+Super Archives (Mailman) plugin for Colab.
 """
 from setuptools import setup, find_packages
 
-install_requires = [
-    'colab',
-    'python-dateutil>=1.5',
-    'requests>=2.7.0',
-]
+install_requires = ['colab']
 
 tests_require = ['mock']
 
-
 setup(
-    name="colab-gitlab",
+    name="colab-super_archives",
     version='0.1.0',
-    author='Sergio Oliveira',
-    author_email='sergio@tracy.com.br',
-    url='https://github.com/colab/colab-gitlab-plugin',
-    description='A Gitlab plugin for Colab',
+    author='Charles Oliveira',
+    author_email='18oliveira.charles@gmail.com',
+    url='https://github.com/chaws/colab-super_archives-plugin',
+    description='Super Archives (Mailman) plugin for Colab',
     long_description=__doc__,
     license='GPLv3',
     package_dir={'': 'src'},

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from django.core.management.base import BaseCommand
-from colab.super_archives.models import Thread
+from colab_super_archives.models import Thread
 
 
 class Command(BaseCommand):
