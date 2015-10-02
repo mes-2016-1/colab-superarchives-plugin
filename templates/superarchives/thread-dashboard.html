@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Groups'|title %}{% endblock %}
+
+{% block main-content %}
+  <h2>{% trans 'Groups'|title %}</h2>
+  <hr/>
+
+  {% for listname, description, latest, most_relevant, number_of_users in lists %}
+    {% if latest or most_relevant %}
+      <h3><b>{{ listname|title|lower }} {% if description %} ({{ description }}){% endif %}</b></h3>
+      <div class="btn-group btn-group-sm">
+        <a href="#" class="btn btn-default" disabled="disabled">{% blocktrans %}{{ number_of_users }} members{% endblocktrans %}</a>
+      </div>
+      <hr/>
+
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <h4>{% trans 'latest'|title %}</h4>
+          <ul class="message-list">
+            {% for thread in latest %}
+              {% include "message-preview.html" with result=thread.latest_message %}
+            {% endfor %}
+          </ul>
+          <div class="text-right">
+            <a href="{% url 'haystack_search' %}?order=latest&list={{ listname }}&type=thread">
+              {% trans "more..." %}
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <h4>{% trans 'most relevant'|title %}</h4>
+          <ul class="message-list">
+            {% for thread in most_relevant %}
+              {% include "message-preview.html" with result=thread %}
+            {% endfor %}
+          </ul>
+          <div class="text-right">
+            <a href="{% url 'haystack_search' %}?list={{ listname }}&type=thread">
+              {% trans "more..." %}
+            </a>
+          </div>
+        </div>
+      </div>
+
+
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}
