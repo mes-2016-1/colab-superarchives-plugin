@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-colab-super_archives plugin
+colab-superarchives plugin
 ===================
 
 Super Archives (Mailman) plugin for Colab.
@@ -12,11 +12,11 @@ install_requires = ['colab']
 tests_require = ['mock']
 
 setup(
-    name="colab-super_archives",
+    name="colab-superarchives",
     version='0.1.0',
     author='Charles Oliveira',
     author_email='18oliveira.charles@gmail.com',
-    url='https://github.com/chaws/colab-super_archives-plugin',
+    url='https://github.com/colab/colab-superarchives-plugin',
     description='Super Archives (Mailman) plugin for Colab',
     long_description=__doc__,
     license='GPLv3',
