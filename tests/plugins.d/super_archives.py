@@ -6,24 +6,24 @@ from colab.plugins.utils.menu import colab_url_factory
 # from django.utils.translation import ugettext_lazy as _
 # from colab.plugins.utils.menu import colab_url_factory
 
-name = 'colab_super_archives'
+name = 'colab_superarchives'
 verbose_name = 'Super Archives'
 
 #upstream = 'localhost'
 #middlewares = []
 
 urls = {
-    'include': 'colab_super_archives.urls',
-    'namespace': 'super_archives',  # TODO: do not allow to change namespace
+    'include': 'colab_superarchives.urls',
+    'namespace': 'superarchives',  # TODO: do not allow to change namespace
     'prefix': '^archives/',
 }
 
 menu_title = _('Groups')
 
-url = colab_url_factory('super_archives')
+url = colab_url_factory('superarchives')
 
 # Imported settings from colab
-LOCALE_PATHS = ('colab_super_archives/locale',)
+LOCALE_PATHS = ('colab_superarchives/locale',)
 
 # Super Archives
 SUPER_ARCHIVES_PATH = '/var/lib/mailman/archives/private'

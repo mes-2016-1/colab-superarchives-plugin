@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from django.core.management.base import BaseCommand
-from colab_super_archives.models import Message
+from colab_superarchives.models import Message
 
 
 class Command(BaseCommand):

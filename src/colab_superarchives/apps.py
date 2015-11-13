@@ -3,6 +3,6 @@ from colab.plugins.utils.apps import ColabPluginAppConfig
 
 
 class SuperArchivesConfig(ColabPluginAppConfig):
-    name = 'colab_super_archives'
+    name = 'colab_superarchives'
     verbose_name = 'Super Archives'
 

@@ -17,8 +17,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 
-from colab_super_archives.utils.email import colab_send_email
-from colab_super_archives.models import (MailingList, Message,
+from colab_superarchives.utils.email import colab_send_email
+from colab_superarchives.models import (MailingList, Message,
                                          Thread, EmailAddress)
 from message import Message as CustomMessage
 

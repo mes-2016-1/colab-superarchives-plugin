@@ -5,7 +5,7 @@ from .views import (EmailView, EmailValidationView, ThreadView,
 
 
 urlpatterns = patterns(
-    'colab_super_archives.views',
+    'colab_superarchives.views',
     url(r'thread/(?P<mailinglist>[-\w]+)/(?P<thread_token>[-\w]+)$',
         ThreadView.as_view(), name="thread_view"),
     url(r'thread/$', ThreadDashboardView.as_view(), name='thread_list'),

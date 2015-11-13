@@ -1,11 +1,11 @@
 include setup.cfg
 include README.md
 include MANIFEST.in
-recursive-include src/colab_super_archives/locale *
-recursive-include src/colab_super_archives/templates *
-recursive-include src/colab_super_archives/templatetags *
-recursive-include src/colab_super_archives/utils *
-recursive-include src/colab_super_archives/fixtures *
-recursive-include src/colab_super_archives/management *
+recursive-include src/colab_superarchives/locale *
+recursive-include src/colab_superarchives/templates *
+recursive-include src/colab_superarchives/templatetags *
+recursive-include src/colab_superarchives/utils *
+recursive-include src/colab_superarchives/fixtures *
+recursive-include src/colab_superarchives/management *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
