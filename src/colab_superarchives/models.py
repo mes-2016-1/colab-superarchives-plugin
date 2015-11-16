@@ -3,7 +3,6 @@
 import urllib
 
 from uuid import uuid4
-from hashlib import md5
 
 from django.db import models
 from django.conf import settings
@@ -17,7 +16,7 @@ from taggit.managers import TaggableManager
 from hitcounter.models import HitCounterModelMixin
 
 from .managers import NotSpamManager, MostVotedManager, HighestScore
-from .utils import blocks, email
+from .utils import blocks
 from .utils.etiquetador import etiquetador
 from colab.accounts.utils import mailman
 from colab.accounts.models import EmailAddress
