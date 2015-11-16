@@ -271,7 +271,7 @@ class Message(models.Model):
     @property
     def url(self):
         """Shortcut to get thread url"""
-        return reverse('thread_view', args=[self.mailinglist.name,
+        return reverse('archives:thread_view', args=[self.mailinglist.name,
                                             self.thread.subject_token])
 
     @property
