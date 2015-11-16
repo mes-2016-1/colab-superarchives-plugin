@@ -21,8 +21,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from colab.accounts.utils import mailman
 from colab.accounts.models import User
 from .utils.email import send_verification_email
-from .models import (MailingList, Thread, EmailAddress,
-                     EmailAddressValidation, Message)
+from .models import (MailingList, Thread, Message)
+from colab.accounts.models import EmailAddressValidation, EmailAddress
 
 
 class ThreadView(View):
