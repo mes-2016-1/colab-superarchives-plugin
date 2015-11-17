@@ -18,7 +18,7 @@ from hitcounter.models import HitCounterModelMixin
 from .managers import NotSpamManager, MostVotedManager, HighestScore
 from .utils import blocks
 from .utils.etiquetador import etiquetador
-from colab.accounts.utils import mailman
+from .utils import mailman
 from colab.accounts.models import EmailAddress
 
 
