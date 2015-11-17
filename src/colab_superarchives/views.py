@@ -17,9 +17,11 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import DetailView
 
 from colab.accounts.utils import mailman
 from colab.accounts.models import User
+from colab.accounts.views import UserProfileBaseMixin
 from .utils.email import send_verification_email
 from .models import (MailingList, Thread, Message)
 from colab.accounts.models import EmailAddressValidation, EmailAddress
@@ -346,3 +348,57 @@ class VoteView(View):
         #   empty body, as per RFC2616.
         #   object deleted
         return http.HttpResponse(status=204)
+
+
+class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
+    http_method_names = [u'get', u'post']
+    template_name = u'accounts/manage_subscriptions.html'
+
+    def get_object(self, *args, **kwargs):
+        obj = super(ManageUserSubscriptionsView, self).get_object(*args,
+                                                                  **kwargs)
+        if self.request.user != obj and not self.request.user.is_superuser:
+            raise PermissionDenied
+
+        return obj
+
+    def post(self, request, *args, **kwargs):
+        user = self.get_object()
+        for email in user.emails.values_list('address', flat=True):
+            lists = self.request.POST.getlist(email)
+            info_messages = mailman.update_subscriptions(email, lists)
+            for msg_type, message in info_messages:
+                show_message = getattr(messages, msg_type)
+                show_message(request, _(message))
+
+        return redirect('user_profile', username=user.username)
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['membership'] = {}
+
+        user = self.get_object()
+        emails = user.emails.values_list('address', flat=True)
+        all_lists = mailman.all_lists()
+
+        for email in emails:
+            lists = []
+            lists_for_address = mailman.mailing_lists(address=email,
+                                                      names_only=True)
+            for mlist in all_lists:
+                if mlist.get('listname') in lists_for_address:
+                    checked = True
+                else:
+                    checked = False
+                lists.append((
+                    {'listname': mlist.get('listname'),
+                     'description': mlist.get('description')},
+                    checked
+                ))
+
+            context['membership'].update({email: lists})
+
+        context.update(kwargs)
+
+        return super(ManageUserSubscriptionsView,
+                     self).get_context_data(**context)
