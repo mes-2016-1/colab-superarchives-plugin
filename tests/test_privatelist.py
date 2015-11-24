@@ -1,8 +1,9 @@
 # -*- coding:utf-8 -*-
 import mock
 
-from colab.accounts.utils import mailman
+from colab_superarchives.utils import mailman
 from django.test import TestCase, Client
+from colab_superarchives.widgets.dashboard_latest_threads import DashboardLatestThreadsWidget
 
 
 class ArchivesViewTest(TestCase):
@@ -47,23 +48,27 @@ class ArchivesViewTest(TestCase):
 
         self.authenticate_user()
         request = self.client.get('/dashboard')
+        self.user = request.context['user']
+
+        widget = DashboardLatestThreadsWidget()
+        context = widget.generate_content(context={'request': self})
 
         latest_threads = request.context['latest_threads']
-        hottest_threads = request.context['hottest_threads']
 
         self.assertEqual(2, len(latest_threads))
-        self.assertEqual(2, len(hottest_threads))
 
     def test_dont_see_private_thread_if_logged_out(self):
         request = self.client.get('/dashboard')
+        self.user = request.context['user']
 
-        latest_threads = request.context['latest_threads']
-        hottest_threads = request.context['hottest_threads']
+        widget = DashboardLatestThreadsWidget()
+        context = widget.generate_content(context={'request' : self})
 
+        latest_threads = context['latest_threads']
         self.assertEqual(1, len(latest_threads))
-        self.assertEqual(1, len(hottest_threads))
 
     def test_dont_see_private_threads_in_profile_if_logged_out(self):
+        request = self.client.get('/dashboard')
         request = self.client.get('/account/johndoe')
 
         emails = request.context['emails']

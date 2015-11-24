@@ -106,12 +106,12 @@ class Thread(models.Model, HitCounterModelMixin):
         return ('thread_view', [self.mailinglist, self.subject_token])
 
     def update_keywords(self):
-        blocks = MessageBlock.objects.filter(message__thread__pk=self.pk,
-                                             is_reply=False)
+        msg_blocks = MessageBlock.objects.filter(message__thread__pk=self.pk,
+                                                 is_reply=False)
 
         self.tags.clear()
 
-        text = u'\n'.join(map(unicode, blocks))
+        text = u'\n'.join(map(unicode, msg_blocks))
         tags = etiquetador(html2text(text))
 
         for tag, weight in tags:

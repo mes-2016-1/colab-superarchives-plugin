@@ -39,7 +39,7 @@
       "md5": "ed8f47ae6048f8d4456c0554578f53ff",
       "address": "johndoe@example.com"
     },
-    "model": "colab_superarchives.emailaddress",
+    "model": "accounts.emailaddress",
     "pk": 1
   },
   {
