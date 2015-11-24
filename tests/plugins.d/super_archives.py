@@ -14,7 +14,7 @@ verbose_name = 'Super Archives'
 
 urls = {
     'include': 'colab_superarchives.urls',
-    'namespace': 'superarchives',  # TODO: do not allow to change namespace
+    'namespace': 'archives',  # TODO: do not allow to change namespace
     'prefix': '^archives/',
 }
 
