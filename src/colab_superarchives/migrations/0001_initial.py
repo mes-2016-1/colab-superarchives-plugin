@@ -4,7 +4,46 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import hitcounter.models
 from django.conf import settings
+from django.db import connections
 import taggit.managers
+
+
+
+sqlmigrate = \
+   """
+BEGIN;
+insert into accounts_emailaddress select * from super_archives_emailaddress
+        where not exists(select id from accounts_emailaddress);
+insert into accounts_emailaddressvalidation select * from super_archives_emailaddressvalidation
+        where not exists(select id from accounts_emailaddressvalidation);
+insert into colab_superarchives_keyword select * from super_archives_keyword
+        where not exists(select id from colab_superarchives_keyword);
+insert into colab_superarchives_mailinglist select * from super_archives_mailinglist
+        where not exists(select id from colab_superarchives_mailinglist);
+insert into colab_superarchives_mailinglistmembership select * from super_archives_mailinglistmembership
+        where not exists(select id from colab_superarchives_mailinglistmembership);
+insert into colab_superarchives_message select * from super_archives_message
+        where not exists(select id from colab_superarchives_message);
+insert into colab_superarchives_messageblock select * from super_archives_messageblock
+        where not exists(select id from colab_superarchives_messageblock);
+insert into colab_superarchives_messagemetadata select * from super_archives_messagemetadata
+        where not exists(select id from colab_superarchives_messagemetadata);
+insert into colab_superarchives_thread select * from super_archives_thread
+        where not exists(select id from colab_superarchives_thread);
+insert into colab_superarchives_vote select * from super_archives_vote
+        where not exists(select id from colab_superarchives_vote);
+END;
+    """
+
+def runSql(app_name, schema_editor):
+    connection = connections['default']
+    cursor = connection.cursor()
+    cursor.execute(sqlmigrate)
+    cursor.close()
+
+
+def reverseSql(app_name, schema_editor):
+    return
 
 
 class Migration(migrations.Migration):
@@ -153,4 +192,5 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='colab_superarchives.Thread'),
             preserve_default=True,
         ),
+        migrations.RunPython(runSql, reverseSql),
     ]
