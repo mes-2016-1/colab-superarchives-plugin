@@ -18,7 +18,8 @@ insert into accounts_emailaddressvalidation select * from super_archives_emailad
         where not exists(select id from accounts_emailaddressvalidation);
 insert into colab_superarchives_keyword select * from super_archives_keyword
         where not exists(select id from colab_superarchives_keyword);
-insert into colab_superarchives_mailinglist select * from super_archives_mailinglist
+insert into colab_superarchives_mailinglist select id, name, email, description, logo, last_imported_index, is_private
+        from super_archives_mailinglist
         where not exists(select id from colab_superarchives_mailinglist);
 insert into colab_superarchives_mailinglistmembership select * from super_archives_mailinglistmembership
         where not exists(select id from colab_superarchives_mailinglistmembership);
@@ -38,7 +39,15 @@ END;
 def runSql(app_name, schema_editor):
     connection = connections['default']
     cursor = connection.cursor()
-    cursor.execute(sqlmigrate)
+    # sqlite only allow a single query per execute, so split and execute them.
+    if connection.vendor == 'sqlite':
+        # remove transaction from the sql string
+        listCommands = sqlmigrate.split(';')[1:-2];
+        for command in listCommands:
+            cursor.execute(command)
+    else:
+        cursor.execute(sqlmigrate)
+
     cursor.close()
 
 
