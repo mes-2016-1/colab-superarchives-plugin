@@ -11,6 +11,7 @@ def run():
     os.environ['COLAB_PLUGINS'] = 'tests/plugins.d'
     os.environ['COLAB_WIDGETS'] = 'tests/widgets.d'
     os.environ['COLAB_SETTINGS'] = 'tests/colab_settings.py'
+    os.environ['COLAB_WIDGETS_SETTINGS'] = 'tests/widgets_settings.py'
     django.setup()
     TestRunner = get_runner(settings)
     test_runner = TestRunner()
