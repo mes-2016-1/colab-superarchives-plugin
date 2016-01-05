@@ -1,6 +1,9 @@
 {% load i18n %}
 
-<div class="col-lg-6 col-md-6">
+<head>
+</head>
+
+<body>
   <h3 class="column-align">
     {% trans "Most Relevant Threads" %}
   </h3>
@@ -10,11 +13,11 @@
   </a>
   <ul class="message-list">
     {% for thread in hottest_threads %}
-      {% include "dashboard-message-preview.html" with result=thread %}
+      {% include "message-preview.html" with result=thread %}
     {% endfor %}
   </ul>
   <a href="{% url 'haystack_search' %}?type=thread">
     {% trans "View more discussions..." %}
   </a>
   <div>&nbsp;</div>
-</div>
+</body>
