@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from ..utils.blocks import EmailBlock
+from colab_superarchives.utils.blocks import EmailBlock
 
 
 class TestEmailBlock(TestCase):
