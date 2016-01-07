@@ -20,6 +20,7 @@ from .utils import blocks
 from .utils.etiquetador import etiquetador
 from .utils import mailman
 from colab.accounts.models import EmailAddress
+from colab.plugins.utils.models import Collaboration
 
 
 def get_validation_key():
@@ -86,7 +87,19 @@ class Keyword(models.Model):
         return self.keyword
 
 
-class Thread(models.Model, HitCounterModelMixin):
+class Thread(Collaboration, HitCounterModelMixin):
+
+    @property
+    def url(self):
+        if self.latest_message:
+            return self.latest_message.url
+        return None
+
+    @property
+    def modified(self):
+        if self.latest_message:
+            return self.latest_message.modified
+        return None
 
     subject_token = models.CharField(max_length=512)
     mailinglist = \
@@ -288,7 +301,7 @@ class Message(models.Model):
     def url(self):
         """Shortcut to get thread url"""
         return reverse('archives:thread_view', args=[self.mailinglist.name,
-                       self.thread.subject_token])
+                                                     self.thread.subject_token])
 
     @property
     def description(self):
