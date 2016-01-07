@@ -12,7 +12,7 @@ def count_threads():
 def get_visible_threads_queryset(logged_user):
     queryset = Thread.objects
     listnames_for_user = []
-    if logged_user:
+    if logged_user.is_authenticated():
         lists_for_user = mailman.get_user_mailinglists(logged_user)
         listnames_for_user = mailman.extract_listname_from_list(lists_for_user)
 
