@@ -10,7 +10,7 @@ class DashboardMostRelevantThreadsWidget(Widget):
 
     def generate_content(self, **kwargs):
         highest_score_threads = Thread.highest_score.all()
-        lists_for_user = None
+        lists_for_user = []
         if kwargs['context']['user'].is_authenticated():
             lists_for_user = mailman.get_user_mailinglists(
                 kwargs['context']['user'])

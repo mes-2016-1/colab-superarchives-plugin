@@ -88,19 +88,6 @@ class Keyword(models.Model):
 
 
 class Thread(Collaboration, HitCounterModelMixin):
-
-    @property
-    def url(self):
-        if self.latest_message:
-            return self.latest_message.url
-        return None
-
-    @property
-    def modified(self):
-        if self.latest_message:
-            return self.latest_message.modified
-        return None
-
     subject_token = models.CharField(max_length=512)
     mailinglist = \
         models.ForeignKey(
@@ -216,6 +203,80 @@ class Thread(Collaboration, HitCounterModelMixin):
 
         self.score = (page_view_score + vote_score + replies_score) // 10
         self.save()
+
+    @property
+    def url(self):
+        if self.latest_message:
+            return self.latest_message.url
+        return None
+
+    @property
+    def description(self):
+        """Alias to self.body"""
+        if self.latest_message:
+          return self.latest_message.body
+
+    @property
+    def title(self):
+        """Alias to self.subject_clean"""
+        if self.latest_message:
+          return self.latest_message.subject_clean
+
+    @property
+    def modified(self):
+        if self.latest_message:
+            return self.latest_message.received_time
+        return None
+
+    @property
+    def tag(self):
+        if not self.latest_message:
+            return None
+        if not self.latest_message.thread:
+            return None
+        return self.latest_message.mailinglist.name
+
+    @property
+    def author(self):
+        if not self.latest_message:
+            return None
+        return self.latest_message.fullname
+
+    @property
+    def author_url(self):
+        if not self.latest_message:
+            return None
+        if self.latest_message.from_address.user_id:
+            return self.latest_message.from_address.user.get_absolute_url()
+        return None
+
+    # An alias for author
+    @property
+    def modified_by(self):
+        if not self.latest_message:
+            return None
+        return self.latest_message.author
+
+    # An alias for author_url
+    @property
+    def modified_by_url(self):
+        if not self.latest_message:
+            return None
+        return self.latest_message.author_url
+
+    @property
+    def fullname(self):
+        if not self.latest_message:
+            return None
+        return self.latest_message.from_address.get_full_name()
+
+    @property
+    def icon_name(self):
+        return u'envelope'
+
+    @property
+    def type(self):
+        return u'thread'
 
 
 class Vote(models.Model):
