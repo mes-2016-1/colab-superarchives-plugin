@@ -110,6 +110,10 @@ class Thread(Collaboration, HitCounterModelMixin):
     # Save this pseudo now to avoid calling the
     #   function N times in the loops below
     now = timezone.now()
+    def save(self, *args, **kwargs):
+        if self.latest_message and self.latest_message.from_address:
+            self.user = self.latest_message.from_address.user
+        super(Thread, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _(u"Thread")
@@ -208,6 +212,12 @@ class Thread(Collaboration, HitCounterModelMixin):
     def url(self):
         if self.latest_message:
             return self.latest_message.url
+        return None
+
+    @property
+    def user(self):
+        if self.latest_message:
+            return self.latest_message.from_address.user
         return None
 
     @property
