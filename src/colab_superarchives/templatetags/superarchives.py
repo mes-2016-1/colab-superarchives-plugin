@@ -1,6 +1,6 @@
 
 from django import template
-from colab.super_archives.utils import url
+from colab_superarchives.utils import url
 
 
 register = template.Library()
