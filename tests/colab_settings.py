@@ -53,3 +53,8 @@ LOGGING = {
 }
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+# Super Archives
+SUPER_ARCHIVES_PATH = '/var/lib/mailman/archives/private'
+SUPER_ARCHIVES_EXCLUDE = []
+SUPER_ARCHIVES_LOCK_FILE = '/var/lock/colab/import_emails.lock'

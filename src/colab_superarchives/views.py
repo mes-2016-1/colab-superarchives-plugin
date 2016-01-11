@@ -22,7 +22,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from colab.accounts.models import User
 from colab.accounts.views import UserProfileBaseMixin
 from .utils import mailman
-from .utils.email import send_verification_email
+from colab.accounts.utils.email import send_verification_email
 from .models import (MailingList, Thread, Message)
 from colab.accounts.models import EmailAddressValidation, EmailAddress
 
