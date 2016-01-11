@@ -1,6 +1,6 @@
 
 from django import template
-from colab_superarchives.utils import url
+from colab.super_archives.utils import url
 
 
 register = template.Library()
@@ -31,3 +31,11 @@ def pop_from_get(context, **kwargs):
         context['request'].META['QUERY_STRING'],
         **kwargs
     )
+
+
+@register.assignment_tag()
+def profile_url(username, user_url):
+    if not username or not user_url:
+        return ""
+
+    return '- <a href="%s">%s</a>' % (user_url, username)

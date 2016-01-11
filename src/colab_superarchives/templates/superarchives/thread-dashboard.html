@@ -4,13 +4,11 @@
 {% block title %}{% trans 'Groups'|title %}{% endblock %}
 
 {% block main-content %}
-
   <h2>{% trans 'Groups'|title %}</h2>
   <hr/>
-
   {% for mailinglist in lists %}
     {% if mailinglist.get_latest or mailinglist.get_most_relevant %}
-      <h3><b>{{ mailinglist.name|title|lower }} {% if mailinglist.description %} ({{ mailinglist.description }}){% endif %}</b></h3>
+      <h3><b><a href="{% url 'mailinglist_view' mailinglist.name %}">{{ mailinglist.name|title|lower }}</a> {% if mailinglist.description %} ({{ mailinglist.description }}){% endif %}</b></h3>
       <div class="btn-group btn-group-sm">
         <a href="#" class="btn btn-default" disabled="disabled">{% blocktrans with number_of_users=mailinglist.get_number_of_users %}{{ number_of_users }} members{% endblocktrans %}</a>
       </div>
@@ -63,7 +61,7 @@
             {% if page_obj.has_previous %}
               {% if page_obj.previous_page_number > 1 %}
                 <li>
-                  <a href="?page={{page_obj.previous_page_number|add:-2 }}">{{ page_obj.number|add:-2 }}</a>
+                  <a href="?page={{page_obj.previous_page_number|add:-1 }}">{{ page_obj.number|add:-2 }}</a>
                 </li>
               {% endif %}
               <li>
