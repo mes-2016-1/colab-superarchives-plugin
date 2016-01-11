@@ -18,9 +18,9 @@ class ArchivesViewTest(TestCase):
 
     def test_see_only_private_list_if_member(self):
         mailman.get_user_mailinglists = mock.Mock(
-            return_value="[{'listname': 'privatelist'}]")
+            return_value=[{'listname': 'privatelist'}])
         mailman.extract_listname_from_list = mock.Mock(
-            return_value="['privatelist']")
+            return_value=['privatelist'])
         mailman.list_users = mock.Mock(return_value="['johndoe@example.com']")
 
         self.authenticate_user()
@@ -28,8 +28,8 @@ class ArchivesViewTest(TestCase):
 
         list_data = request.context['lists']
 
-        self.assertEqual('lista', list_data[0][0])
-        self.assertEqual('privatelist', list_data[1][0])
+        self.assertEqual('lista', list_data[0].name)
+        self.assertEqual('privatelist', list_data[1].name)
         self.assertEqual(2, len(list_data))
 
     def test_see_only_public_if_not_logged_in(self):
@@ -37,7 +37,7 @@ class ArchivesViewTest(TestCase):
 
         list_data = request.context['lists']
 
-        self.assertEqual('lista', list_data[0][0])
+        self.assertEqual('lista', list_data[0].name)
         self.assertEqual(1, len(list_data))
 
     def test_see_private_thread_in_dashboard_if_member(self):
@@ -48,10 +48,9 @@ class ArchivesViewTest(TestCase):
 
         self.authenticate_user()
         request = self.client.get('/dashboard')
-        self.user = request.context['user']
 
         widget = DashboardLatestThreadsWidget()
-        context = widget.generate_content(context={'request': self})
+        context = widget.generate_content(context={'user': request.context['user']})
 
         latest_threads = request.context['latest_threads']
 
@@ -59,10 +58,9 @@ class ArchivesViewTest(TestCase):
 
     def test_dont_see_private_thread_if_logged_out(self):
         request = self.client.get('/dashboard')
-        self.user = request.context['user']
 
         widget = DashboardLatestThreadsWidget()
-        context = widget.generate_content(context={'request' : self})
+        context = widget.generate_content(context={'user': request.context['user']})
 
         latest_threads = context['latest_threads']
         self.assertEqual(1, len(latest_threads))

@@ -10,4 +10,4 @@ class LatestPostedWidget(Widget):
         query = get_visible_threads(
             kwargs['context']['user'], kwargs['context']['object'])
         kwargs['context']['emails'] = query.order_by('-received_time')[:10]
-        super(LatestPostedWidget, self).generate_content(**kwargs)
+        return super(LatestPostedWidget, self).generate_content(**kwargs)

@@ -19,5 +19,5 @@ class DashboardMostRelevantThreadsWidget(Widget):
             highest_score_threads, lists_for_user,
             lambda t: t.latest_message)[:10]
 
-        super(DashboardMostRelevantThreadsWidget,
-              self).generate_content(**kwargs)
+        return super(DashboardMostRelevantThreadsWidget,
+                     self).generate_content(**kwargs)

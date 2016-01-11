@@ -18,4 +18,5 @@ class DashboardLatestThreadsWidget(Widget):
         kwargs['context']['latest_threads'] = get_user_threads(
             all_threads, lists_for_user, lambda t: t)[:10]
 
-        super(DashboardLatestThreadsWidget, self).generate_content(**kwargs)
+        return super(DashboardLatestThreadsWidget,
+                     self).generate_content(**kwargs)

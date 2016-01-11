@@ -16,4 +16,4 @@ class GroupWidget(Widget):
                                                   .annotate(Count(count_by))
                                                   .order_by(count_by))
 
-        super(GroupWidget, self).generate_content(**kwargs)
+        return super(GroupWidget, self).generate_content(**kwargs)
