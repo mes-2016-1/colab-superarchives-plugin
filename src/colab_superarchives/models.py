@@ -110,6 +110,7 @@ class Thread(Collaboration, HitCounterModelMixin):
     # Save this pseudo now to avoid calling the
     #   function N times in the loops below
     now = timezone.now()
+
     def save(self, *args, **kwargs):
         if self.latest_message and self.latest_message.from_address:
             self.user = self.latest_message.from_address.user
@@ -224,13 +225,13 @@ class Thread(Collaboration, HitCounterModelMixin):
     def description(self):
         """Alias to self.body"""
         if self.latest_message:
-          return self.latest_message.body
+            return self.latest_message.body
 
     @property
     def title(self):
         """Alias to self.subject_clean"""
         if self.latest_message:
-          return self.latest_message.subject_clean
+            return self.latest_message.subject_clean
 
     @property
     def modified(self):
@@ -371,8 +372,9 @@ class Message(models.Model):
     @property
     def url(self):
         """Shortcut to get thread url"""
-        return reverse('archives:thread_view', args=[self.mailinglist.name,
-                                                     self.thread.subject_token])
+        return reverse('archives:thread_view',
+                       args=[self.mailinglist.name,
+                             self.thread.subject_token])
 
     @property
     def description(self):
