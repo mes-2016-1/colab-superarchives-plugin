@@ -124,7 +124,7 @@ class Thread(Collaboration, HitCounterModelMixin):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('thread_view', [self.mailinglist, self.subject_token])
+        return ('archives:thread_view', [self.mailinglist, self.subject_token])
 
     def update_keywords(self):
         msg_blocks = MessageBlock.objects.filter(message__thread__pk=self.pk,
