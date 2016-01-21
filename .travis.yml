@@ -12,7 +12,7 @@ install:
 
 script:
   - python setup.py test
-  - flake8 src/colab_gitlab
+  - flake8 src/colab_superarchives
   - flake8 test
 
 after_success:
