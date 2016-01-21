@@ -1,8 +1,8 @@
 from django.conf.urls import patterns, url
 
-from .views import (EmailView, EmailValidationView, ThreadView,
-                    ThreadDashboardView, VoteView, ManageUserSubscriptionsView,
-                    MailingListView)
+from colab.accounts.views import EmailValidationView, EmailView
+from .views import (ThreadView, ThreadDashboardView, VoteView,
+                    ManageUserSubscriptionsView, MailingListView)
 
 
 urlpatterns = patterns(
