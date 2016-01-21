@@ -1,0 +1,19 @@
+[run]
+omit =
+    */migrations/*
+    */tests/*
+    test_*.py
+    */__init__.py
+    */urls.py
+    */settings.py
+    */tests.py
+source =
+    src/colab_superarchives/
+
+[report]
+precision = 2
+show_missing = True
+
+[html]
+directory = coverage_report/
+title = Colab Super Archives Plugin Test Coverage
