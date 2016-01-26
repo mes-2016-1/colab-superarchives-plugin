@@ -14,13 +14,16 @@ verbose_name = 'Super Archives'
 
 urls = {
     'include': 'colab_superarchives.urls',
-    'namespace': 'archives',  # TODO: do not allow to change namespace
     'prefix': '^archives/',
 }
 
 menu_title = _('Groups')
 
-url = colab_url_factory('superarchives')
+url = colab_url_factory('archives')
+
+menu_urls = (
+    url(display=_('Groups'), viewname='thread_list', auth=False),
+)
 
 # Imported settings from colab
 LOCALE_PATHS = ('colab_superarchives/locale',)
