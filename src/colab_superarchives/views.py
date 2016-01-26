@@ -282,7 +282,7 @@ class EmailValidationView(View):
             raise http.Http404
 
         try:
-            location = reverse('archive_email_view',
+            location = reverse('archives:archive_email_view',
                                kwargs={'key': email.validation_key})
             verification_url = request.build_absolute_uri(location)
             send_verification_email(request, email_addr, email.user,
@@ -337,7 +337,8 @@ class MailingListView(ListView):
     paginate_by = 6
     model = Thread
 
-    def dispatch(self, request, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        super(MailingListView, self).__init__(*args, **kwargs)
 
         self.order_data = {
             'latest': {
@@ -349,6 +350,19 @@ class MailingListView(ListView):
                 'field': '-score'
             }
         }
+
+    def dispatch(self, request, *args, **kwargs):
+        mailinglist = MailingList.objects.get(name=kwargs['mailinglist'])
+
+        if mailinglist.is_private:
+            if not request.user.is_authenticated():
+                error_message = _("You are not logged in")
+                messages.add_message(request, messages.ERROR, error_message)
+                return redirect('login')
+
+            if not self.check_list_membership(request.user, mailinglist.name):
+                return redirect('archives:user_list_subscriptions',
+                                username=request.user)
 
         return super(MailingListView, self).dispatch(request, *args, **kwargs)
 
@@ -376,6 +390,20 @@ class MailingListView(ListView):
         context['selected'] = self.request.GET.get('order')
 
         return context
+
+    def check_list_membership(self, user, mailinglist_name):
+        user = User.objects.get(username=user)
+        lists_for_user = mailman.get_user_mailinglists(user)
+        listnames_for_user = mailman.extract_listname_from_list(
+            lists_for_user)
+
+        if mailinglist_name not in listnames_for_user:
+            error_message = _("You don't have permission to access this list")
+            messages.add_message(self.request, messages.ERROR, error_message)
+
+            return False
+
+        return True
 
 
 class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
