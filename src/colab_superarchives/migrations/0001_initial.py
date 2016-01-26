@@ -44,16 +44,16 @@ CREATE TABLE IF NOT EXISTS super_archives_vote (id INTEGER, id2 timestamp, id3 I
 insert into colab_superarchives_vote select * from super_archives_vote
         where not exists(select id from colab_superarchives_vote);
 
-DROP TABLE super_archives_message ;
-DROP TABLE super_archives_emailaddress ;
-DROP TABLE super_archives_emailaddressvalidation ;
-DROP TABLE super_archives_mailinglistmembership ;
-DROP TABLE super_archives_mailinglist ;
-DROP TABLE super_archives_keyword ;
-DROP TABLE super_archives_messageblock ;
-DROP TABLE super_archives_messagemetadata ;
-DROP TABLE super_archives_thread ;
-DROP TABLE super_archives_vote ;
+DROP TABLE super_archives_vote CASCADE;
+DROP TABLE super_archives_keyword CASCADE;
+DROP TABLE super_archives_message CASCADE;
+DROP TABLE super_archives_thread CASCADE;
+DROP TABLE super_archives_emailaddress CASCADE;
+DROP TABLE super_archives_emailaddressvalidation CASCADE;
+DROP TABLE super_archives_mailinglistmembership CASCADE;
+DROP TABLE super_archives_mailinglist CASCADE;
+DROP TABLE super_archives_messageblock CASCADE;
+DROP TABLE super_archives_messagemetadata CASCADE;
 END;
     """
 
@@ -65,6 +65,9 @@ def runSql(app_name, schema_editor):
         # remove transaction from the sql string
         listCommands = sqlmigrate.split(';')[1:-2];
         for command in listCommands:
+            # sqlite does not accept CASCADE drop
+            if 'CASCADE' in command:
+                command = command.replace('CASCADE', '')
             cursor.execute(command)
     else:
         cursor.execute(sqlmigrate)
