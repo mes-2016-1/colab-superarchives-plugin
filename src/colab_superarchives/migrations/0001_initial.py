@@ -12,35 +12,35 @@ import taggit.managers
 sqlmigrate = \
    """
 BEGIN;
-CREATE TABLE IF NOT EXISTS super_archives_emailaddress (id INTEGER, id2 INTEGER, id3 INTEGER, id4 INTEGER, id5 INTEGER);
+CREATE TABLE IF NOT EXISTS super_archives_emailaddress (id INTEGER, address INTEGER, real_name INTEGER, md5 INTEGER, user_id INTEGER);
 insert into accounts_emailaddress select id, address, real_name, md5, user_id from super_archives_emailaddress 
         where not exists(select id from accounts_emailaddress);
-CREATE TABLE IF NOT EXISTS super_archives_emailaddressvalidation (id INTEGER, id2 INTEGER, id3 timestamp, id4 timestamp, id5 INTEGER);
+CREATE TABLE IF NOT EXISTS super_archives_emailaddressvalidation (id INTEGER, address INTEGER, validation_key timestamp, created timestamp, user_id INTEGER);
 insert into accounts_emailaddressvalidation select id, address, validation_key, created, user_id from super_archives_emailaddressvalidation
         where not exists(select id from accounts_emailaddressvalidation);
-CREATE TABLE IF NOT EXISTS super_archives_keyword (id INTEGER, id2 INTEGER, id3 INTEGER, id4 INTEGER);
+CREATE TABLE IF NOT EXISTS super_archives_keyword (id INTEGER, keyword INTEGER, weight INTEGER, thread_id INTEGER);
 insert into colab_superarchives_keyword select id, keyword, weight, thread_id from super_archives_keyword
         where not exists(select id from colab_superarchives_keyword);
 CREATE TABLE IF NOT EXISTS super_archives_mailinglist (id INTEGER, name INTEGER, email INTEGER, description INTEGER, logo INTEGER, last_imported_index INTEGER, is_private BOOLEAN);
 insert into colab_superarchives_mailinglist select id, name, email, description, logo, last_imported_index, is_private
         from super_archives_mailinglist
         where not exists(select id from colab_superarchives_mailinglist);
-CREATE TABLE IF NOT EXISTS super_archives_mailinglistmembership (id INTEGER, id2 INTEGER, id3 INTEGER);
-insert into colab_superarchives_mailinglistmembership select * from super_archives_mailinglistmembership
+CREATE TABLE IF NOT EXISTS super_archives_mailinglistmembership (id INTEGER, mailinglist_id INTEGER, user_id INTEGER);
+insert into colab_superarchives_mailinglistmembership select id, mailinglist_id, user_id from super_archives_mailinglistmembership
         where not exists(select id from colab_superarchives_mailinglistmembership);
-CREATE TABLE IF NOT EXISTS super_archives_message (id INTEGER, id2 INTEGER, id3 INTEGER, id4 INTEGER, id5 timestamp, id6 INTEGER, id7 BOOLEAN, id8 INTEGER, id9 INTEGER);
-insert into colab_superarchives_message select id, subject, subject_clean, body, received_time, message_id, spam, from_address_id from super_archives_message
+CREATE TABLE IF NOT EXISTS super_archives_message (id INTEGER, subject INTEGER, subject_clean INTEGER, body INTEGER, received_time timestamp, message_id INTEGER, spam BOOLEAN, from_address_id INTEGER, thread_id INTEGER);
+insert into colab_superarchives_message select id, subject, subject_clean, body, received_time, message_id, spam, from_address_id, thread_id from super_archives_message
         where not exists(select id from colab_superarchives_message);
-CREATE TABLE IF NOT EXISTS super_archives_messageblock (id INTEGER, id2 INTEGER, id3 BOOLEAN, id4 INTEGER, id5 INTEGER);
+CREATE TABLE IF NOT EXISTS super_archives_messageblock (id INTEGER, text INTEGER, is_reply BOOLEAN, "order" INTEGER, message_id INTEGER);
 insert into colab_superarchives_messageblock select id, text, is_reply, "order", message_id from super_archives_messageblock
         where not exists(select id from colab_superarchives_messageblock);
-CREATE TABLE IF NOT EXISTS super_archives_messagemetadata (id INTEGER, id2 INTEGER, id3 INTEGER, id4 INTEGER);
+CREATE TABLE IF NOT EXISTS super_archives_messagemetadata (id INTEGER, name INTEGER, value INTEGER, "Message_id" INTEGER);
 insert into colab_superarchives_messagemetadata select id, name, value, "Message_id" from super_archives_messagemetadata
         where not exists(select id from colab_superarchives_messagemetadata);
-CREATE TABLE IF NOT EXISTS super_archives_thread (id INTEGER, id2 BOOLEAN, id3 INTEGER, id4 BOOLEAN, id5 INTEGER, id6 INTEGER);
+CREATE TABLE IF NOT EXISTS super_archives_thread (id INTEGER, subject_token BOOLEAN, score INTEGER, spam BOOLEAN, latest_message_id INTEGER, mailinglist_id INTEGER);
 insert into colab_superarchives_thread select id, subject_token, score, spam, latest_message_id, mailinglist_id from super_archives_thread
         where not exists(select id from colab_superarchives_thread);
-CREATE TABLE IF NOT EXISTS super_archives_vote (id INTEGER, id2 timestamp, id3 INTEGER, id4 INTEGER);
+CREATE TABLE IF NOT EXISTS super_archives_vote (id INTEGER, created timestamp, message_id INTEGER, user_id INTEGER);
 insert into colab_superarchives_vote select id, created, message_id, user_id from super_archives_vote
         where not exists(select id from colab_superarchives_vote);
 
