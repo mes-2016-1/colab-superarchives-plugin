@@ -30,9 +30,9 @@ class MostVotedManager(NotSpamManager):
             SELECT
                 count(sav.id)
             FROM
-                super_archives_vote AS sav
+                colab_superarchives_vote AS sav
             WHERE
-                super_archives_message.id = sav.message_id
+                colab_superarchives_message.id = sav.message_id
         """
 
         messages = queryset.extra(
