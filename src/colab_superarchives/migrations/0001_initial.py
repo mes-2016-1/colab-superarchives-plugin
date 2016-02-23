@@ -82,7 +82,7 @@ def reverseSql(app_name, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('taggit', '0002_auto_20150616_2121'),
+        ('taggit', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('accounts', '0007_auto_20151105_0120'),
     ]
