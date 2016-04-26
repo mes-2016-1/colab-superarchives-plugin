@@ -9,12 +9,13 @@ import requests
 from django import http
 from django.conf import settings
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.db.models import Q
 from django.views.generic import View, ListView, DetailView
 from django.utils.translation import ugettext as _
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -407,6 +408,9 @@ class MailingListView(ListView):
 
 
 class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
+    # Set the desired quantity of lists per page
+    LISTS_PER_PAGE = 10
+
     http_method_names = [u'get', u'post']
     template_name = u'accounts/manage_subscriptions.html'
 
@@ -415,7 +419,6 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
                                                                   **kwargs)
         if self.request.user != obj and not self.request.user.is_superuser:
             raise PermissionDenied
-
         return obj
 
     def post(self, request, *args, **kwargs):
@@ -436,6 +439,12 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
         user = self.get_object()
         emails = user.emails.values_list('address', flat=True)
         all_lists = mailman.all_lists()
+        all_lists = sorted(all_lists, key=lambda list: list['real_name'])
+
+        page = self.request.GET.get('page')
+        per_page = self.request.GET.get('per_page')
+        per_page = per_page if per_page else self.LISTS_PER_PAGE
+        context['per_page'] = per_page
 
         for email in emails:
             lists = []
@@ -451,6 +460,15 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
                      'description': mlist.get('description')},
                     checked
                 ))
+
+            paginator = Paginator(lists, per_page)
+
+            try:
+                lists = paginator.page(page)
+            except PageNotAnInteger:
+                lists = paginator.page(1)
+            except EmptyPage:
+                lists = paginator.page(paginator.num_pages)
 
             context['membership'].update({email: lists})
 

@@ -119,3 +119,41 @@ class MailingListViewTest(TestCase):
                          'privatelist')
         self.assertEqual(response.context['thread_list'][0].subject_token,
                          'Subject3')
+
+    @patch('colab_superarchives.views.mailman.all_lists',
+           return_value=[{'listname': 'blist', 'real_name': 'blist'},
+                         {'listname': 'alist', 'real_name': 'alist'}])
+    def test_manage_subscription_lists_order(self, mock):
+        self.client.login(username=self.username, password='admin')
+        url = reverse('archives:user_list_subscriptions',
+                      kwargs={'username': self.username})
+        response = self.client.get(url)
+        user = response.context['user']
+
+        lists = response.context['membership'][user.email]
+        lists = map(lambda l: l[0], lists)
+        expected_lists = [{'listname': 'alist', 'description': None},
+                          {'listname': 'blist', 'description': None}]
+
+        self.assertEqual(lists, expected_lists)
+
+    @patch('colab_superarchives.views.mailman.all_lists',
+           return_value=[{'listname': 'blist', 'real_name': 'blist'},
+                         {'listname': 'alist', 'real_name': 'alist'}])
+    def test_manage_subscription_lists_pagination(self, mock):
+        self.client.login(username=self.username, password='admin')
+        url = reverse('archives:user_list_subscriptions',
+                      kwargs={'username': self.username})
+        response = self.client.get(url + "?per_page=1&page=1")
+        user = response.context['user']
+
+        lists = response.context['membership'][user.email]
+        lists = map(lambda l: l[0], lists)
+        expected_lists = [{'listname': 'alist', 'description': None}]
+        self.assertEqual(lists, expected_lists)
+
+        response = self.client.get(url + "?per_page=1&page=2")
+        lists = response.context['membership'][user.email]
+        lists = map(lambda l: l[0], lists)
+        expected_lists = [{'listname': 'blist', 'description': None}]
+        self.assertEqual(lists, expected_lists)
