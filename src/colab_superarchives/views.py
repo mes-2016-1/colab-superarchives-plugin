@@ -448,7 +448,8 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
                     checked = False
                 lists.append((
                     {'listname': mlist.get('listname'),
-                     'description': mlist.get('description')},
+                     'description': mlist.get('description'),
+                     'archive_private': mlist.get('archive_private')},
                     checked
                 ))
 
