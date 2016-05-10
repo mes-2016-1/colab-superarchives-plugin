@@ -119,3 +119,15 @@ class MailingListViewTest(TestCase):
                          'privatelist')
         self.assertEqual(response.context['thread_list'][0].subject_token,
                          'Subject3')
+
+    @patch('colab_superarchives.views.mailman.all_lists',
+           return_value=[{'listname': 'privatelist', 'archive_private': 1}])
+    def test_identification_private_list_on_subscription(self, mock):
+        self.authenticate_user()
+        response = self.client.get(
+            '/archives/' + self.username + '/subscriptions'
+        )
+
+        expected_message = 'Private'
+        self.assertEqual(200, response.status_code)
+        self.assertIn(expected_message, response.content)

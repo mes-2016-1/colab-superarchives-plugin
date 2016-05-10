@@ -96,5 +96,15 @@
       },
       "model": "accounts.emailaddress",
       "pk": 1
+    },
+    {
+      "fields": {
+        "real_name": "Norris",
+        "user": 2,
+        "md5": "dbe5c51bd2094a39a86187ca14107288",
+        "address": "chucknorris@mail.com"
+      },
+      "model": "accounts.emailaddress",
+      "pk": 2
     }
 ]

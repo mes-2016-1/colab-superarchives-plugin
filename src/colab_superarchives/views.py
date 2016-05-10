@@ -441,6 +441,7 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
             lists = []
             lists_for_address = mailman.mailing_lists(address=email,
                                                       names_only=True)
+
             for mlist in all_lists:
                 if mlist.get('listname') in lists_for_address:
                     checked = True
