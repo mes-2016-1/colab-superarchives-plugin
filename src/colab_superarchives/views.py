@@ -432,9 +432,11 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
     def post(self, request, *args, **kwargs):
         user = self.get_object()
 
-        # If it is an ajax request, get the user mailling lists to display filtering it by name
+        # If it is an ajax request, get the user mailling lists
+        # to display filtering it by name
         if request.is_ajax():
-            response = self.search_lists_by_name(user, request.POST.get('listname'))
+            response = self.search_lists_by_name(user,
+                                                 request.POST.get('listname'))
         else:
             for email in user.emails.values_list('address', flat=True):
                 lists = self.request.POST.getlist(email)
@@ -450,7 +452,8 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
     def search_lists_by_name(self, user, listname):
         context = self.get_mailling_lists(user, listname)
 
-        html = render_to_string(u'accounts/subscription_lists.html', {'membership': context['membership']})
+        html = render_to_string(u'accounts/subscription_lists.html',
+                                {'membership': context['membership']})
 
         return http.HttpResponse(html)
 
@@ -463,14 +466,12 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
         for email in emails:
 
             lists = self.filter_lists_by_name(email, listname)
-            
             context['membership'].update({email: lists})
 
         return context
 
     def filter_lists_by_name(self, user_email, listname):
         all_lists = mailman.all_lists()
-        
         lists = []
         lists_for_address = mailman.mailing_lists(address=user_email,
                                                   names_only=True)
@@ -478,9 +479,9 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
 
             checked = self.check_user_list(mlist, lists_for_address)
 
-            if listname != None and listname in mlist.get('listname'):
+            if listname is not None and listname in mlist.get('listname'):
                 append_to_list = True
-            elif listname == None:
+            elif listname is None:
                 append_to_list = True
             else:
                 append_to_list = False
