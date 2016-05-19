@@ -18,6 +18,7 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 
 from colab.accounts.models import User
 from colab.accounts.views import UserProfileBaseMixin
@@ -420,21 +421,45 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         user = self.get_object()
-        for email in user.emails.values_list('address', flat=True):
-            lists = self.request.POST.getlist(email)
-            info_messages = mailman.update_subscription(email, lists)
-            for msg_type, message in info_messages:
-                show_message = getattr(messages, msg_type)
-                show_message(request, _(message))
 
-        return redirect('user_profile', username=user.username)
+        # If it is an ajax request,
+        if request.is_ajax():
+
+            context = self.get_mailling_lists(user, request.POST.get('listname'))
+
+            html = render_to_string(u'accounts/subscription_lists.html', {'membership': context['membership']})
+
+            return http.HttpResponse(html)
+
+        else:
+
+            for email in user.emails.values_list('address', flat=True):
+                lists = self.request.POST.getlist(email)
+                info_messages = mailman.update_subscription(email, lists)
+                for msg_type, message in info_messages:
+                    show_message = getattr(messages, msg_type)
+                    show_message(request, _(message))
+
+            return redirect('user_profile', username=user.username)
 
     def get_context_data(self, **kwargs):
+
+        user = self.get_object()
+
+        context = self.get_mailling_lists(user)
+
+        context.update(kwargs)
+
+        return super(ManageUserSubscriptionsView,
+                     self).get_context_data(**context)
+
+    def get_mailling_lists(self, user, listname=None):
+
         context = {}
         context['membership'] = {}
 
-        user = self.get_object()
         emails = user.emails.values_list('address', flat=True)
+
         all_lists = mailman.all_lists()
 
         for email in emails:
@@ -446,15 +471,21 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
                     checked = True
                 else:
                     checked = False
-                lists.append((
-                    {'listname': mlist.get('listname'),
-                     'description': mlist.get('description')},
-                    checked
-                ))
+
+                if listname != None and listname in mlist.get('listname'):
+                    lists.append((
+                        {'listname': mlist.get('listname'),
+                         'description': mlist.get('description')},
+                        checked
+                    ))
+                elif listname == None:
+                    lists.append((
+                        {'listname': mlist.get('listname'),
+                         'description': mlist.get('description')},
+                        checked
+                    ))
 
             context['membership'].update({email: lists})
 
-        context.update(kwargs)
+        return context
 
-        return super(ManageUserSubscriptionsView,
-                     self).get_context_data(**context)
