@@ -419,6 +419,16 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
 
         return obj
 
+    def get_context_data(self, **kwargs):
+        user = self.get_object()
+
+        context = self.get_mailling_lists(user)
+
+        context.update(kwargs)
+
+        return super(ManageUserSubscriptionsView,
+                     self).get_context_data(**context)
+
     def post(self, request, *args, **kwargs):
         user = self.get_object()
 
@@ -444,51 +454,50 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
 
         return http.HttpResponse(html)
 
-
-    def get_context_data(self, **kwargs):
-        user = self.get_object()
-
-        context = self.get_mailling_lists(user)
-
-        context.update(kwargs)
-
-        return super(ManageUserSubscriptionsView,
-                     self).get_context_data(**context)
-
     def get_mailling_lists(self, user, listname=None):
-
         context = {}
         context['membership'] = {}
 
         emails = user.emails.values_list('address', flat=True)
 
-        all_lists = mailman.all_lists()
-
         for email in emails:
-            lists = []
-            lists_for_address = mailman.mailing_lists(address=email,
-                                                      names_only=True)
-            for mlist in all_lists:
-                if mlist.get('listname') in lists_for_address:
-                    checked = True
-                else:
-                    checked = False
 
-                if listname != None and listname in mlist.get('listname'):
-                    append_to_list = True
-                elif listname == None:
-                    append_to_list = True
-                else:
-                    append_to_list = False
-
-                if append_to_list:
-                    lists.append((
-                        {'listname': mlist.get('listname'),
-                         'description': mlist.get('description')},
-                        checked
-                    ))
-
+            lists = self.filter_lists_by_name(email, listname)
+            
             context['membership'].update({email: lists})
 
         return context
 
+    def filter_lists_by_name(self, user_email, listname):
+        all_lists = mailman.all_lists()
+        
+        lists = []
+        lists_for_address = mailman.mailing_lists(address=user_email,
+                                                  names_only=True)
+        for mlist in all_lists:
+
+            checked = self.check_user_list(mlist, lists_for_address)
+
+            if listname != None and listname in mlist.get('listname'):
+                append_to_list = True
+            elif listname == None:
+                append_to_list = True
+            else:
+                append_to_list = False
+
+            if append_to_list:
+                lists.append((
+                    {'listname': mlist.get('listname'),
+                     'description': mlist.get('description')},
+                    checked
+                ))
+
+        return lists
+
+    def check_user_list(self, user_list, user_lists):
+        if user_list.get('listname') in user_lists:
+            checked = True
+        else:
+            checked = False
+
+        return checked
