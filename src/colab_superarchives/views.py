@@ -443,7 +443,6 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
             return redirect('user_profile', username=user.username)
 
     def get_context_data(self, **kwargs):
-        
         user = self.get_object()
 
         context = self.get_mailling_lists(user)
@@ -472,13 +471,13 @@ class ManageUserSubscriptionsView(UserProfileBaseMixin, DetailView):
                 else:
                     checked = False
 
-                if listname != None and mlist.get('listname') == listname:
+                if listname != None and listname in mlist.get('listname'):
                     lists.append((
                         {'listname': mlist.get('listname'),
                          'description': mlist.get('description')},
                         checked
                     ))
-                else:
+                elif listname == None:
                     lists.append((
                         {'listname': mlist.get('listname'),
                          'description': mlist.get('description')},
