@@ -4,7 +4,7 @@ import mock
 from colab_superarchives.utils import mailman
 from django.test import TestCase, Client
 from colab_superarchives.widgets.dashboard_latest_threads import DashboardLatestThreadsWidget
-
+from colab_superarchives.views import ThreadView
 
 class ArchivesViewTest(TestCase):
 
@@ -72,3 +72,23 @@ class ArchivesViewTest(TestCase):
         emails = request.context['emails']
 
         self.assertEqual(1, len(emails))
+
+class ThreadViewTest(TestCase):
+
+    fixtures = ['mailinglistdata.json']
+
+    def setUp(self):
+        self.client = Client()
+
+    def authenticate_user(self):
+        self.client.login(username='johndoe', password='1234')
+
+    def test_mailing_list_in_user_list(self):
+        self.authenticate_user()
+        thread = ThreadView()
+
+        user_name = "johndoe"
+        list_name = "privatelist"
+
+        list_in_user = thread.mailing_list_in_user_list(user_name, list_name)
+        self.assertTrue(list_in_user)

@@ -31,7 +31,6 @@ class ThreadView(View):
     http_method_names = [u'get', u'post']
 
     def get(self, request, mailinglist, thread_token):
-
         thread = get_object_or_404(Thread, subject_token=thread_token,
                                    mailinglist__name=mailinglist)
 
@@ -43,16 +42,10 @@ class ThreadView(View):
         )
 
         if all_privates.count(thread.mailinglist.name):
-            if not request.user.is_authenticated():
+            if not request.user.is_authenticated() or \
+                not self.mailing_list_in_user_list(request.user,
+                                                   thread.mailinglist.name):
                 raise PermissionDenied
-            else:
-                user = User.objects.get(username=request.user)
-                emails = user.emails.values_list('address', flat=True)
-                lists_for_user = mailman.get_user_mailinglists(user)
-                listnames_for_user = mailman.extract_listname_from_list(
-                    lists_for_user)
-                if thread.mailinglist.name not in listnames_for_user:
-                    raise PermissionDenied
 
         thread.hit(request)
 
@@ -137,6 +130,16 @@ class ThreadView(View):
             messages.error(request, error_msg)
 
         return self.get(request, mailinglist, thread_token)
+
+    def mailing_list_in_user_list(self, user_name, name_mailing_list):
+        user = User.objects.get(username=user_name)
+        lists_for_user = mailman.get_user_mailinglists(user)
+        listnames_for_user = mailman.extract_listname_from_list(
+            lists_for_user)
+        if name_mailing_list not in listnames_for_user:
+            return False
+        else:
+            return True
 
 
 class ThreadDashboardView(ListView):
