@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import mock
 
+import requests
 from colab_superarchives.utils import mailman
 from django.test import TestCase, Client
 from colab_superarchives.widgets.dashboard_latest_threads import DashboardLatestThreadsWidget
@@ -79,16 +80,32 @@ class ThreadViewTest(TestCase):
 
     def setUp(self):
         self.client = Client()
+        self.thread_view = ThreadView()
+        data = {
+            'in_reply_to': 1,
+            'email_from': "test@test.com",
+            'name_from': "John Doe",
+            'subject': "Subject Test",
+            'body': "Email body test",
+        }
+        url = "http://localhost:8124/v2/sendmail/privatelist"
+
+        self.response = requests.post(url, data=data, timeout=2)
 
     def authenticate_user(self):
         self.client.login(username='johndoe', password='1234')
 
     def test_mailing_list_in_user_list(self):
         self.authenticate_user()
-        thread = ThreadView()
 
         user_name = "johndoe"
         list_name = "privatelist"
 
-        list_in_user = thread.mailing_list_in_user_list(user_name, list_name)
+        list_in_user = self.thread_view.mailing_list_in_user_list(user_name,
+                                                                  list_name)
         self.assertTrue(list_in_user)
+
+    def test_empty_email_message(self):
+        self.response.status_code = 400
+        error_message = self.thread_view.return_error_message(self.response)
+        self.assertEqual(error_message, 'You cannot send an empty email')

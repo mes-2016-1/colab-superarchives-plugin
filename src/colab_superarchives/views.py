@@ -99,7 +99,8 @@ class ThreadView(View):
         url = urlparse.urljoin(settings.MAILMAN_API_URL,
                                'sendmail/' + mailinglist)
 
-        error_msg = None
+        print (data)
+        print (url)
 
         response_data = self.get_response_message_sent(url, data)
 
@@ -122,8 +123,7 @@ class ThreadView(View):
         return self.get(request, mailinglist, thread_token)
 
     def get_response_message_sent(self, url, data):
-        print "entrou na funcao get_response_message_sent"
-        error_msg = ""
+        error_msg = None
 
         try:
             resp = requests.post(url, data=data, timeout=2)
@@ -151,7 +151,6 @@ class ThreadView(View):
             return True
 
     def return_error_message(self, response):
-        print "entrou na funcao return_error_message"
         return_message = ""
 
         if response is not None:
