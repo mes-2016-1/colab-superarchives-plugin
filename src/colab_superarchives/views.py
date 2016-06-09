@@ -81,6 +81,16 @@ class ThreadView(View):
 
         return render(request, 'message-thread.html', context)
 
+    def mailing_list_in_user_list(self, user_name, name_mailing_list):
+        user = User.objects.get(username=user_name)
+        lists_for_user = mailman.get_user_mailinglists(user)
+        listnames_for_user = mailman.extract_listname_from_list(
+            lists_for_user)
+        if name_mailing_list not in listnames_for_user:
+            return False
+        else:
+            return True
+
     def post(self, request, mailinglist, thread_token):
         try:
             thread = Thread.objects.get(subject_token=thread_token,
@@ -137,16 +147,6 @@ class ThreadView(View):
 
         return response_data
 
-    def mailing_list_in_user_list(self, user_name, name_mailing_list):
-        user = User.objects.get(username=user_name)
-        lists_for_user = mailman.get_user_mailinglists(user)
-        listnames_for_user = mailman.extract_listname_from_list(
-            lists_for_user)
-        if name_mailing_list not in listnames_for_user:
-            return False
-        else:
-            return True
-
     def return_error_message(self, response):
         return_message = ""
 
@@ -155,6 +155,9 @@ class ThreadView(View):
                 return_message = _('You cannot send an empty email')
             elif response.status_code == 404:
                 return_message = _('Mailing list does not exist')
+            else:
+                return_message = \
+                    _('Unknown error trying to connect to Mailman API')
         else:
             return_message = \
                 _('Unknown error trying to connect to Mailman API')

@@ -117,6 +117,12 @@ class ThreadViewTest(TestCase):
         self.assertEqual(error_message, 'Mailing list does not exist')
 
     def test_error_message_unknown_error(self):
+        self.response.status_code = 999999
+        error_message = self.thread_view.return_error_message(self.response)
+        self.assertEqual(error_message,
+                         'Unknown error trying to connect to Mailman API')
+
+    def test_error_message_with_response_none(self):
         response = None
         error_message = self.thread_view.return_error_message(response)
         self.assertEqual(error_message,
