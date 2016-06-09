@@ -105,7 +105,18 @@ class ThreadViewTest(TestCase):
                                                                   list_name)
         self.assertTrue(list_in_user)
 
-    def test_empty_email_message(self):
+    def test_error_message_empty_email(self):
         self.response.status_code = 400
         error_message = self.thread_view.return_error_message(self.response)
         self.assertEqual(error_message, 'You cannot send an empty email')
+
+    def test_error_message_mailing_list_not_exist(self):
+        self.response.status_code = 404
+        error_message = self.thread_view.return_error_message(self.response)
+        self.assertEqual(error_message, 'Mailing list does not exist')
+
+    def test_error_message_unknown_error(self):
+        self.response = None
+        error_message = self.thread_view.return_error_message(self.response)
+        self.assertEqual(error_message,
+                         'Unknown error trying to connect to Mailman API')
