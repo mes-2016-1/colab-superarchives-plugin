@@ -99,9 +99,6 @@ class ThreadView(View):
         url = urlparse.urljoin(settings.MAILMAN_API_URL,
                                'sendmail/' + mailinglist)
 
-        print (data)
-        print (url)
-
         response_data = self.get_response_message_sent(url, data)
 
         resp = response_data[0]

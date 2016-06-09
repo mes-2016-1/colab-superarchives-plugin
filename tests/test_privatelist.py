@@ -1,7 +1,9 @@
 # -*- coding:utf-8 -*-
 import mock
 
+from mock import patch
 import requests
+from requests.exceptions import Timeout
 from colab_superarchives.utils import mailman
 from django.test import TestCase, Client
 from colab_superarchives.widgets.dashboard_latest_threads import DashboardLatestThreadsWidget
@@ -88,7 +90,7 @@ class ThreadViewTest(TestCase):
             'subject': "Subject Test",
             'body': "Email body test",
         }
-        url = "http://localhost:8124/v2/sendmail/privatelist"
+        url = "http://localhost/"
 
         self.response = requests.post(url, data=self.data, timeout=2)
 
@@ -127,3 +129,11 @@ class ThreadViewTest(TestCase):
             wrong_url, self.data)[1]
         self.assertEqual(return_message,
                          'Error trying to connect to Mailman API')
+
+    @patch('requests.post', side_effect=Timeout())
+    def test_get_response_timeout(self, mock):
+        any_url = "http://anything.com"
+        return_message = self.thread_view.get_response_message_sent(
+            any_url, self.data)[1]
+        self.assertEqual(return_message,
+                         'Timeout trying to connect to Mailman API')

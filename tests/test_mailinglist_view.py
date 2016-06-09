@@ -109,9 +109,7 @@ class MailingListViewTest(TestCase):
            return_value=[{'listname': 'privatelist'}])
     def test_private_list_access_with_user_permission(self, mock):
         self.authenticate_user()
-        response = self.client.get(
-            '/archives/mailinglist/privatelist'
-        )
+        response = self.client.get('/archives/mailinglist/privatelist')
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(len(response.context['thread_list']), 1)
