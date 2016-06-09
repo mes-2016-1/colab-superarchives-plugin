@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
-import mock
-
 from mock import patch
+from mock import Mock
 import requests
 from requests.exceptions import Timeout
 from colab_superarchives.utils import mailman
@@ -20,11 +19,11 @@ class ArchivesViewTest(TestCase):
         self.client.login(username='johndoe', password='1234')
 
     def test_see_only_private_list_if_member(self):
-        mailman.get_user_mailinglists = mock.Mock(
+        mailman.get_user_mailinglists = Mock(
             return_value=[{'listname': 'privatelist'}])
-        mailman.extract_listname_from_list = mock.Mock(
+        mailman.extract_listname_from_list = Mock(
             return_value=['privatelist'])
-        mailman.list_users = mock.Mock(return_value="['johndoe@example.com']")
+        mailman.list_users = Mock(return_value="['johndoe@example.com']")
 
         self.authenticate_user()
         request = self.client.get('/archives/thread/')
@@ -44,9 +43,9 @@ class ArchivesViewTest(TestCase):
         self.assertEqual(1, len(list_data))
 
     def test_see_private_thread_in_dashboard_if_member(self):
-        mailman.get_user_mailinglists = mock.Mock(
+        mailman.get_user_mailinglists = Mock(
             return_value="[{'listname': 'privatelist'}]")
-        mailman.extract_listname_from_list = mock.Mock(
+        mailman.extract_listname_from_list = Mock(
             return_value="['privatelist']")
 
         self.authenticate_user()
@@ -137,3 +136,10 @@ class ThreadViewTest(TestCase):
             any_url, self.data)[1]
         self.assertEqual(return_message,
                          'Timeout trying to connect to Mailman API')
+
+    @patch('requests.post', return_value=None)
+    def test_get_response_successfully(self, mock):
+        any_url = "http://anything.com"
+        return_message = self.thread_view.get_response_message_sent(
+            any_url, self.data)[1]
+        self.assertEqual(return_message, None)
