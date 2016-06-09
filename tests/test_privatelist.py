@@ -81,7 +81,7 @@ class ThreadViewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.thread_view = ThreadView()
-        data = {
+        self.data = {
             'in_reply_to': 1,
             'email_from': "test@test.com",
             'name_from': "John Doe",
@@ -90,7 +90,7 @@ class ThreadViewTest(TestCase):
         }
         url = "http://localhost:8124/v2/sendmail/privatelist"
 
-        self.response = requests.post(url, data=data, timeout=2)
+        self.response = requests.post(url, data=self.data, timeout=2)
 
     def authenticate_user(self):
         self.client.login(username='johndoe', password='1234')
@@ -116,7 +116,14 @@ class ThreadViewTest(TestCase):
         self.assertEqual(error_message, 'Mailing list does not exist')
 
     def test_error_message_unknown_error(self):
-        self.response = None
-        error_message = self.thread_view.return_error_message(self.response)
+        response = None
+        error_message = self.thread_view.return_error_message(response)
         self.assertEqual(error_message,
                          'Unknown error trying to connect to Mailman API')
+
+    def test_get_response_connection_error(self):
+        wrong_url = "http://error.url.not.exist"
+        return_message = self.thread_view.get_response_message_sent(
+            wrong_url, self.data)[1]
+        self.assertEqual(return_message,
+                         'Error trying to connect to Mailman API')
