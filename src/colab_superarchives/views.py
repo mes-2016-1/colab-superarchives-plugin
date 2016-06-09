@@ -100,14 +100,11 @@ class ThreadView(View):
                                'sendmail/' + mailinglist)
 
         error_msg = None
-        try:
-            resp = requests.post(url, data=data, timeout=2)
-        except requests.exceptions.ConnectionError:
-            resp = None
-            error_msg = _('Error trying to connect to Mailman API')
-        except requests.exceptions.Timeout:
-            resp = None
-            error_msg = _('Timeout trying to connect to Mailman API')
+
+        response_data = self.get_response_message_sent(url, data)
+
+        resp = response_data[0]
+        error_msg = response_data[1]
 
         if resp and resp.status_code == 200:
             messages.success(request, _(
@@ -118,18 +115,30 @@ class ThreadView(View):
             ))
         else:
             if not error_msg:
-                if resp is not None:
-                    if resp.status_code == 400:
-                        error_msg = _('You cannot send an empty email')
-                    elif resp.status_code == 404:
-                        error_msg = _('Mailing list does not exist')
-                else:
-                    error_msg = \
-                        _('Unknown error trying to connect to Mailman API')
+                error_msg = self.return_error_message(resp)
 
             messages.error(request, error_msg)
 
         return self.get(request, mailinglist, thread_token)
+
+    def get_response_message_sent(self, url, data):
+        print "entrou na funcao get_response_message_sent"
+        error_msg = ""
+
+        try:
+            resp = requests.post(url, data=data, timeout=2)
+        except requests.exceptions.ConnectionError:
+            resp = None
+            error_msg = _('Error trying to connect to Mailman API')
+        except requests.exceptions.Timeout:
+            resp = None
+            error_msg = _('Timeout trying to connect to Mailman API')
+
+        response_data = []
+        response_data.append(resp)
+        response_data.append(error_msg)
+
+        return response_data
 
     def mailing_list_in_user_list(self, user_name, name_mailing_list):
         user = User.objects.get(username=user_name)
@@ -140,6 +149,21 @@ class ThreadView(View):
             return False
         else:
             return True
+
+    def return_error_message(self, response):
+        print "entrou na funcao return_error_message"
+        return_message = ""
+
+        if response is not None:
+            if response.status_code == 400:
+                return_message = _('You cannot send an empty email')
+            elif response.status_code == 404:
+                return_message = _('Mailing list does not exist')
+        else:
+            return_message = \
+                _('Unknown error trying to connect to Mailman API')
+
+        return return_message
 
 
 class ThreadDashboardView(ListView):
@@ -166,8 +190,7 @@ class EmailView(View):
     http_method_names = [u'head', u'get', u'post', u'delete', u'update']
 
     def get(self, request, key):
-        """Validate an email with the given key"""
-
+        """Validate an email with the given key."""
         try:
             email_val = EmailAddressValidation.objects.get(validation_key=key)
         except EmailAddressValidation.DoesNotExist:
@@ -201,8 +224,7 @@ class EmailView(View):
 
     @method_decorator(login_required)
     def post(self, request, key):
-        """Create new email address that will wait for validation"""
-
+        """Create new email address that will wait for validation."""
         email = request.POST.get('email')
         user_id = request.POST.get('user')
         if not email:
@@ -222,7 +244,6 @@ class EmailView(View):
     @method_decorator(login_required)
     def delete(self, request, key):
         """Remove an email address, validated or not."""
-
         request.DELETE = http.QueryDict(request.body)
         email_addr = request.DELETE.get('email')
         user_id = request.DELETE.get('user')
@@ -252,7 +273,6 @@ class EmailView(View):
     @method_decorator(login_required)
     def update(self, request, key):
         """Set an email address as primary address."""
-
         request.UPDATE = http.QueryDict(request.body)
 
         email_addr = request.UPDATE.get('email')
