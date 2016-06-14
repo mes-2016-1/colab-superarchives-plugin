@@ -3,7 +3,8 @@ import mock
 
 from colab_superarchives.utils import mailman
 from django.test import TestCase, Client
-from colab_superarchives.widgets.dashboard_latest_threads import DashboardLatestThreadsWidget
+from colab_superarchives.widgets.dashboard_latest_threads\
+    import DashboardLatestThreadsWidget
 
 
 class ArchivesViewTest(TestCase):
@@ -49,9 +50,6 @@ class ArchivesViewTest(TestCase):
         self.authenticate_user()
         request = self.client.get('/dashboard')
 
-        widget = DashboardLatestThreadsWidget()
-        context = widget.generate_content(context={'user': request.context['user']})
-
         latest_threads = request.context['latest_threads']
 
         self.assertEqual(4, len(latest_threads))
@@ -60,7 +58,8 @@ class ArchivesViewTest(TestCase):
         request = self.client.get('/dashboard')
 
         widget = DashboardLatestThreadsWidget()
-        context = widget.generate_content(context={'user': request.context['user']})
+        context = widget.generate_content(context={
+                                          'user': request.context['user']})
 
         latest_threads = context['latest_threads']
         self.assertEqual(1, len(latest_threads))

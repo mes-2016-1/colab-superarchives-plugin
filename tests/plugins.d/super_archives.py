@@ -9,8 +9,8 @@ from colab.plugins.utils.menu import colab_url_factory
 name = 'colab_superarchives'
 verbose_name = 'Super Archives'
 
-#upstream = 'localhost'
-#middlewares = []
+# upstream = 'localhost'
+# middlewares = []
 
 urls = {
     'include': 'colab_superarchives.urls',

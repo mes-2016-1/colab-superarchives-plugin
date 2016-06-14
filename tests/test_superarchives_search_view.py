@@ -1,11 +1,7 @@
 # -*- coding:utf-8 -*-
 
-import mock
-
-from colab.plugins.utils import filters_importer
 from django.test import TestCase,  Client
 from django.core.management import call_command
-from colab.search.forms import ColabSearchForm
 
 
 class SuperarchivesSearchViewTest(TestCase):
@@ -38,7 +34,7 @@ class SuperarchivesSearchViewTest(TestCase):
     def test_search_multiple_filters(self):
         request = self.client.get('/search/?q=&type=thread+user')
         user_list = request.context['page'].object_list
-        user_list.sort(key=lambda i : i.name)
+        user_list.sort(key=lambda i: i.name)
 
         self.assertEqual(6, len(user_list))
 
